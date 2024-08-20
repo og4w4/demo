@@ -14,9 +14,12 @@ CREATE TABLE authorities (
 CREATE UNIQUE INDEX ix_auth_username ON authorities (username, authority);
 
 -- ユーザーとパスワードをエンコードして登録 (例としてBcryptでエンコード)
+INSERT INTO users (username, password, enabled) VALUES ('admin', '$2a$10$my4Gfi1y0KtjpxVUIbMACuqv/rmdQ649Db/PpH4ighdfd7AI0C3MW', true);
 INSERT INTO users (username, password, enabled) VALUES ('001', '$2a$10$Ok46SuHTSyXA1eFvqxgkR.UbFWGEmmJU4kihTIkCox7ACWaBHTMaC', true);
 INSERT INTO users (username, password, enabled) VALUES ('002', '$2a$10$/TqJtXyC6DCjGWFUFvoC6ON.y3WGWe3bw14jGCWfucOcISegEuQ1C', true);
 
+
 -- ユーザーに権限を付与
+INSERT INTO authorities (username, authority) VALUES ('admin', 'ROLE_ADMIN');
 INSERT INTO authorities (username, authority) VALUES ('001', 'ROLE_USER');
 INSERT INTO authorities (username, authority) VALUES ('002', 'ROLE_USER');
