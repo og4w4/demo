@@ -1,10 +1,13 @@
 package com.example.demo;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+
 
 @Controller
 public class IndexController {
@@ -14,30 +17,46 @@ public class IndexController {
         return "hello";
     }
 
-    @GetMapping("/home")
-    public String home(){
-        return "home";
+    @GetMapping("/change")
+    public String getMethodName(InputForm inputForm) {
+        return "change";
     }
 
-        @GetMapping("/admin")
-    public String adminPage() {
-        return "admin"; // 管理者ページのテンプレート
-    }
+    @PostMapping("/password")
+    public String postMethodName(@Validated InputForm inputForm, BindingResult result, Model model) {
 
-    @GetMapping("/user")
-    public String userPage() {
-        return "user"; // ユーザーページのテンプレート
-    }
+        // 入力文字のエスケープはいるか　
 
-    @RequestMapping("/profile")
-    public String profile() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
-            return "adminProfile"; // 管理者のプロフィールページ
-        } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_USER"))) {
-            return "userProfile"; // ユーザーのプロフィールページ
-        } else {
-            return "accessDenied"; // アクセス拒否ページ
+
+        if(result.hasErrors()){
+            return "change";
         }
+
+        if(!inputForm.getCurrentPassword().equals("a")){
+            result.rejectValue("currentPassword", null, "現在のパスワードが間違っています");
+            System.out.println("現在のパスワードが間違っています");
+            return "change";
+        }
+
+        if(!inputForm.getNewPassword().equals(inputForm.getConfirmPassword())){
+            result.rejectValue("newPassword", null, "新しいパスワードと確認用パスワードが一致しません");
+            System.out.println("新しいパスワードと確認用パスワードが一致しません");
+            System.out.println(inputForm.getNewPassword());
+            System.out.println(inputForm.getConfirmPassword());
+            return "change";
+        }
+
+        // 登録する処理
+        /**
+         * 
+         * 
+         * 
+         */
+
+        model.addAttribute("message", "パスワードを変更しました");
+        
+        return "changed";
     }
+    
+    
 }

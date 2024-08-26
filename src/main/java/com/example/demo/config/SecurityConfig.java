@@ -16,17 +16,28 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    // @Bean
+    // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    //     http
+    //         .authorizeHttpRequests((requests) -> requests
+    //             .requestMatchers("/").permitAll()
+    //             .anyRequest().authenticated()
+    //         )
+    //         .formLogin()
+    //             .defaultSuccessUrl("/home")
+    //         .and()
+    //         .logout((logout) -> logout.permitAll());
+
+    //     return http.build();
+    // }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()  // すべてのリクエストを認証なしで許可
             )
-            .formLogin()
-                .defaultSuccessUrl("/home")
-            .and()
-            .logout((logout) -> logout.permitAll());
+            .csrf().disable();  // CSRF保護を無効化（開発用）
 
         return http.build();
     }
